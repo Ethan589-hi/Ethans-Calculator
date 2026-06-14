@@ -225,18 +225,83 @@ searchInput.addEventListener('input', () => {
   
  </head>
     <body>
-<div id="calculator-decoy" style="display: block; text-align: center; margin-top: 50px;">
-    <h2 style="color: white; font-family: monospace;">Standard Calculator</h2>
-    <input type="text" id="calc-screen" oninput="checkSecretPassword(this.value)" placeholder="0" style="padding: 10px; font-size: 20px; text-align: right; border-radius: 5px; background: #333; color: white; border: none;">
-    <div style="margin-top: 10px;">
-        <button style="padding: 15px 20px; background: #444; color: white; border: none; border-radius: 5px;">1</button>
-        <button style="padding: 15px 20px; background: #444; color: white; border: none; border-radius: 5px;">2</button>
-        <button style="padding: 15px 20px; background: #444; color: white; border: none; border-radius: 5px;">3</button>
+<div id="calculator-decoy">
+    <h4 style="color: white; text-align: center; margin-top: 0; margin-bottom: 15px;">Calculator</h4>
+    <input type="text" id="calc-screen" placeholder="" readonly>
+    
+    <div class="calc-grid">
+        <button class="calc-btn clear" style="grid-column: span 2;" onclick="clearCalc()">C</button>
+        <button class="calc-btn clear" onclick="appendCalc('/')">÷</button>
+        <button class="calc-btn op" onclick="appendCalc('*')">×</button>
+        
+        <button class="calc-btn" onclick="appendCalc('7')">7</button>
+        <button class="calc-btn" onclick="appendCalc('8')">8</button>
+        <button class="calc-btn" onclick="appendCalc('9')">9</button>
+        <button class="calc-btn op" onclick="appendCalc('-')">−</button>
+        
+        <button class="calc-btn" onclick="appendCalc('4')">4</button>
+        <button class="calc-btn" onclick="appendCalc('5')">5</button>
+        <button class="calc-btn" onclick="appendCalc('6')">6</button>
+        <button class="calc-btn op" onclick="appendCalc('+')">+</button>
+        
+        <button class="calc-btn" onclick="appendCalc('1')">1</button>
+        <button class="calc-btn" onclick="appendCalc('2')">2</button>
+        <button class="calc-btn" onclick="appendCalc('3')">3</button>
+        <button class="calc-btn op" style="grid-row: span 2; height: 100%;" onclick="calculateEquals()">=</button>
+        
+        <button class="calc-btn" style="grid-column: span 2;" onclick="appendCalc('0')">0</button>
+        <button class="calc-btn" onclick="appendCalc('.')">.</button>
     </div>
 </div>
 
 <div id="main-arcade-layout" style="display: none;">
-                 <style>
+    <img src="https://static.wikia.nocookie.net/jujutsu-kaisen/images/a/aa/Fumihiko_Takaba.png/revision/latest?cb=20240611204814" style="width: 100%; max-width: 600px; border-radius: 15px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto;" alt="Secret Unlocked Image">
+    </div>
+                  
+                  /* --- REAL CALCULATOR STYLING --- */
+#calculator-decoy {
+    width: 320px;
+    margin: 50px auto;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    font-family: sans-serif;
+}
+#calc-screen {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 15px;
+    font-size: 32px;
+    text-align: right;
+    background: #eef1f5;
+    color: #111;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    pointer-events: none; /* Prevents typing with keyboard to make it feel like an app */
+}
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+.calc-btn {
+    padding: 15px 0;
+    font-size: 22px;
+    background: #444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+.calc-btn:hover { background: #555; }
+.calc-btn:active { transform: scale(0.95); }
+.calc-btn.op { background: #ff9500; font-weight: bold; }
+.calc-btn.op:hover { background: #ffaa33; }
+.calc-btn.clear { background: #a5a5a5; color: black; font-weight: bold; }
+.calc-btn.clear:hover { background: #c0c0c0; }
                 body {
                   background-image: url('resources/background.webp');
                   background-repeat: no-repeat;
@@ -1082,11 +1147,38 @@ function toggleMask() {
     isMasked = !isMasked;
 }
 
-function checkSecretPassword(currentValue) {
-    if (currentValue === "takaba") {
+/* ==========================================
+   FUNCTIONAL CALCULATOR & SECRET TRIGGER
+   ========================================== */
+function appendCalc(val) {
+    const screen = document.getElementById('calc-screen');
+    // Clear "Error" message if they start typing again
+    if (screen.value === "Error") screen.value = ""; 
+    screen.value += val;
+}
+
+function clearCalc() {
+    document.getElementById('calc-screen').value = '';
+}
+
+function calculateEquals() {
+    const screen = document.getElementById('calc-screen');
+    
+    // THE SECRET: If the screen is completely blank and they press "="
+    if (screen.value === "") {
         document.getElementById('calculator-decoy').style.display = 'none';
         document.getElementById('main-arcade-layout').style.display = 'block';
-        document.getElementById('calc-screen').value = '';
+    } 
+    // IF THERE ARE NUMBERS: Do the actual math!
+    else {
+        try {
+            // We use normal Javascript math to calculate the screen's value
+            let result = eval(screen.value);
+            // Limit long decimals so it looks clean
+            screen.value = Math.round(result * 100000000) / 100000000; 
+        } catch (error) {
+            screen.value = "Error";
+        }
     }
 }
 
