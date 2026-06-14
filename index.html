@@ -38,7 +38,33 @@
             margin: 0;
             color: white;
             font-family: monospace;
-        }
+        }/* --- FAVORITES SYSTEM STYLING --- */
+.game-wrapper { 
+    position: relative; 
+    display: inline-block; 
+}
+.favorite-btn { 
+    position: absolute; 
+    top: 6px; 
+    right: 6px; 
+    background: rgba(0,0,0,0.6); 
+    color: #ccc; 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 20px; 
+    cursor: pointer; 
+    padding: 4px 8px; 
+    z-index: 10; 
+    transition: transform 0.15s, color 0.2s; 
+}
+.favorite-btn:hover { 
+    transform: scale(1.1); 
+}
+/* This is the rule that turns the star gold! */
+.favorite-btn.active { 
+    color: #ffcc00 !important; 
+    text-shadow: 0 0 5px #ffcc00;
+}
     </style>
 </head>
 <body>
@@ -366,8 +392,7 @@ toggle.onchange = () => {
     ✕ Reset Background
   </button>
  
-<button onclick="toggleMask()" style="padding: 8px 15px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 5px; cursor: pointer; color: black;">
-    Mask Tab
+<button onclick="toggleMask()">Mask Tab</button>
 </button>
   </button>
  
